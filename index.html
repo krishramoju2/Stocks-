@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -471,7 +470,202 @@
         .context-item:hover {
             background-color: rgba(110, 72, 170, 0.1);
         }
-        
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--dark);
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--primary);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            color: var(--secondary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .primary-btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .secondary-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+
+        /* Flashcard styles */
+        .flashcard-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .flashcard {
+            background-color: rgba(26, 26, 46, 0.6);
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--secondary);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .flashcard:hover {
+            transform: translateY(-3px);
+        }
+
+        .flashcard-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .flashcard-answer {
+            display: none;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .flashcard.show-answer .flashcard-answer {
+            display: block;
+        }
+
+        /* Cheatsheet styles */
+        .cheatsheet-section {
+            margin-bottom: 20px;
+        }
+
+        .cheatsheet-title {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cheatsheet-item {
+            margin-bottom: 8px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .cheatsheet-item::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+        }
+
+        /* Mental Health styles */
+        .mh-question {
+            margin-bottom: 15px;
+        }
+
+        .mh-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mh-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mh-option input {
+            accent-color: var(--secondary);
+        }
+
+        .mh-result {
+            display: none;
+            padding: 15px;
+            background-color: rgba(26, 26, 46, 0.6);
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid var(--info);
+        }
+
+        /* Translation styles */
+        .translation-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .translation-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .translation-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--light);
+            resize: none;
+            margin-bottom: 10px;
+        }
+
+        .language-select {
+            padding: 8px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--light);
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .main-content {
@@ -484,6 +678,10 @@
             
             .sidebar {
                 margin-bottom: 20px;
+            }
+
+            .translation-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -599,12 +797,186 @@
         </div>
     </div>
     
+    <!-- Context Window -->
     <div class="context-window" id="context-window">
         <div class="context-content">
             <button class="close-context" id="close-context">&times;</button>
             <h3 class="context-title">Infinite Context Memory</h3>
             <div id="context-list">
                 <!-- Context items will be added here dynamically -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Screenshot to Code Modal -->
+    <div class="modal" id="screenshot-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-camera"></i> Screenshot to Code</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Upload a screenshot of a UI design and I'll convert it to HTML/CSS code.</p>
+                <input type="file" id="screenshot-upload" accept="image/*" style="margin: 15px 0;">
+                <div id="screenshot-preview" style="text-align: center; margin: 15px 0; display: none;">
+                    <img id="preview-image" style="max-width: 100%; max-height: 300px; border-radius: 5px;">
+                </div>
+                <div id="generated-code" style="display: none;">
+                    <h4 style="margin-bottom: 10px;">Generated Code:</h4>
+                    <div class="code-block" id="code-output"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary-btn close-modal">Cancel</button>
+                <button class="modal-btn primary-btn" id="generate-code-btn">Generate Code</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Translation Modal -->
+    <div class="modal" id="translation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-language"></i> Multilingual Translation</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="translation-container">
+                    <div class="translation-box">
+                        <select class="language-select" id="source-language">
+                            <option value="auto">Detect Language</option>
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="zh">Chinese</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ru">Russian</option>
+                            <option value="ar">Arabic</option>
+                        </select>
+                        <textarea class="translation-textarea" id="source-text" placeholder="Enter text to translate"></textarea>
+                    </div>
+                    <div class="translation-box">
+                        <select class="language-select" id="target-language">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="zh">Chinese</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ru">Russian</option>
+                            <option value="ar">Arabic</option>
+                        </select>
+                        <textarea class="translation-textarea" id="translated-text" placeholder="Translation will appear here" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary-btn close-modal">Cancel</button>
+                <button class="modal-btn primary-btn" id="translate-text-btn">Translate</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cheatsheet Modal -->
+    <div class="modal" id="cheatsheet-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-file-alt"></i> Create Cheat Sheet</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Enter a topic and I'll generate a comprehensive cheat sheet for you.</p>
+                <input type="text" id="cheatsheet-topic" placeholder="Enter topic (e.g., Python, CSS Grid, React)" style="width: 100%; padding: 10px; margin: 15px 0; background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--light); border-radius: 5px;">
+                <div id="cheatsheet-result" style="display: none;">
+                    <div class="cheatsheet-section">
+                        <h4 class="cheatsheet-title">Basic Syntax</h4>
+                        <div class="cheatsheet-item">Item 1</div>
+                        <div class="cheatsheet-item">Item 2</div>
+                        <div class="cheatsheet-item">Item 3</div>
+                    </div>
+                    <div class="cheatsheet-section">
+                        <h4 class="cheatsheet-title">Common Patterns</h4>
+                        <div class="cheatsheet-item">Pattern 1</div>
+                        <div class="cheatsheet-item">Pattern 2</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary-btn close-modal">Cancel</button>
+                <button class="modal-btn primary-btn" id="generate-cheatsheet-btn">Generate Cheat Sheet</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Flashcard Modal -->
+    <div class="modal" id="flashcard-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-layer-group"></i> Generate Flashcards</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Enter a topic and I'll create flashcards to help you study.</p>
+                <input type="text" id="flashcard-topic" placeholder="Enter topic (e.g., Biology terms, French verbs)" style="width: 100%; padding: 10px; margin: 15px 0; background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--light); border-radius: 5px;">
+                <div id="flashcard-result" style="display: none;">
+                    <div class="flashcard-container" id="flashcard-container">
+                        <!-- Flashcards will be generated here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary-btn close-modal">Cancel</button>
+                <button class="modal-btn primary-btn" id="generate-flashcards-btn">Generate Flashcards</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mental Health Modal -->
+    <div class="modal" id="mental-health-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-heart"></i> Mental Health Check</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Answer these questions to get a quick mental health assessment.</p>
+                <div id="mh-questions">
+                    <div class="mh-question">
+                        <p>1. How often have you felt down, depressed, or hopeless in the past 2 weeks?</p>
+                        <div class="mh-options">
+                            <label class="mh-option"><input type="radio" name="q1" value="0"> Not at all</label>
+                            <label class="mh-option"><input type="radio" name="q1" value="1"> Several days</label>
+                            <label class="mh-option"><input type="radio" name="q1" value="2"> More than half the days</label>
+                            <label class="mh-option"><input type="radio" name="q1" value="3"> Nearly every day</label>
+                        </div>
+                    </div>
+                    <div class="mh-question">
+                        <p>2. How often have you had little interest or pleasure in doing things?</p>
+                        <div class="mh-options">
+                            <label class="mh-option"><input type="radio" name="q2" value="0"> Not at all</label>
+                            <label class="mh-option"><input type="radio" name="q2" value="1"> Several days</label>
+                            <label class="mh-option"><input type="radio" name="q2" value="2"> More than half the days</label>
+                            <label class="mh-option"><input type="radio" name="q2" value="3"> Nearly every day</label>
+                        </div>
+                    </div>
+                    <div class="mh-question">
+                        <p>3. How often have you felt nervous, anxious, or on edge?</p>
+                        <div class="mh-options">
+                            <label class="mh-option"><input type="radio" name="q3" value="0"> Not at all</label>
+                            <label class="mh-option"><input type="radio" name="q3" value="1"> Several days</label>
+                            <label class="mh-option"><input type="radio" name="q3" value="2"> More than half the days</label>
+                            <label class="mh-option"><input type="radio" name="q3" value="3"> Nearly every day</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mh-result" id="mh-result">
+                    <!-- Result will be shown here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn secondary-btn close-modal">Cancel</button>
+                <button class="modal-btn primary-btn" id="assess-mh-btn">Get Assessment</button>
             </div>
         </div>
     </div>
@@ -623,6 +995,40 @@
         const contextList = document.getElementById('context-list');
         const timeline = document.getElementById('timeline');
         const themeBtns = document.querySelectorAll('.theme-btn');
+        
+        // Modal elements
+        const modals = document.querySelectorAll('.modal');
+        const closeModalBtns = document.querySelectorAll('.close-modal');
+        const screenshotBtn = document.getElementById('screenshot-btn');
+        const screenshotModal = document.getElementById('screenshot-modal');
+        const screenshotUpload = document.getElementById('screenshot-upload');
+        const previewImage = document.getElementById('preview-image');
+        const generateCodeBtn = document.getElementById('generate-code-btn');
+        const codeOutput = document.getElementById('code-output');
+        
+        const translateBtn = document.getElementById('translate-btn');
+        const translateModal = document.getElementById('translation-modal');
+        const translateTextBtn = document.getElementById('translate-text-btn');
+        const sourceText = document.getElementById('source-text');
+        const translatedText = document.getElementById('translated-text');
+        
+        const cheatsheetBtn = document.getElementById('cheatsheet-btn');
+        const cheatsheetModal = document.getElementById('cheatsheet-modal');
+        const cheatsheetTopic = document.getElementById('cheatsheet-topic');
+        const generateCheatsheetBtn = document.getElementById('generate-cheatsheet-btn');
+        const cheatsheetResult = document.getElementById('cheatsheet-result');
+        
+        const flashcardBtn = document.getElementById('flashcard-btn');
+        const flashcardModal = document.getElementById('flashcard-modal');
+        const flashcardTopic = document.getElementById('flashcard-topic');
+        const generateFlashcardsBtn = document.getElementById('generate-flashcards-btn');
+        const flashcardResult = document.getElementById('flashcard-result');
+        const flashcardContainer = document.getElementById('flashcard-container');
+        
+        const mentalHealthBtn = document.getElementById('mental-health-btn');
+        const mentalHealthModal = document.getElementById('mental-health-modal');
+        const assessMhBtn = document.getElementById('assess-mh-btn');
+        const mhResult = document.getElementById('mh-result');
         
         // Chat history
         let chatHistory = [
@@ -698,6 +1104,332 @@
                     const themeIndex = parseInt(btn.getAttribute('data-theme')) - 1;
                     applyTheme(themeIndex);
                 });
+            });
+            
+            // Modal functionality
+            screenshotBtn.addEventListener('click', () => screenshotModal.style.display = 'flex');
+            translateBtn.addEventListener('click', () => translateModal.style.display = 'flex');
+            cheatsheetBtn.addEventListener('click', () => cheatsheetModal.style.display = 'flex');
+            flashcardBtn.addEventListener('click', () => flashcardModal.style.display = 'flex');
+            mentalHealthBtn.addEventListener('click', () => mentalHealthModal.style.display = 'flex');
+            
+            closeModalBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    modals.forEach(modal => modal.style.display = 'none');
+                });
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+            
+            // Screenshot to code functionality
+            screenshotUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        previewImage.src = event.target.result;
+                        document.getElementById('screenshot-preview').style.display = 'block';
+                        document.getElementById('generated-code').style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            generateCodeBtn.addEventListener('click', () => {
+                // Simulate code generation
+                const htmlCode = `<!DOCTYPE html>
+<html>
+<head>
+    <title>Generated UI</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        /* More styles based on the uploaded image */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">My App</div>
+            <nav>
+                <a href="#">Home</a>
+                <a href="#">Features</a>
+                <a href="#">Contact</a>
+            </nav>
+        </header>
+        <main class="main-content">
+            <!-- Content would be generated based on the image -->
+        </main>
+    </div>
+</body>
+</html>`;
+                
+                codeOutput.textContent = htmlCode;
+                document.getElementById('generated-code').style.display = 'block';
+            });
+            
+            // Translation functionality
+            translateTextBtn.addEventListener('click', () => {
+                const text = sourceText.value;
+                if (text.trim() === '') return;
+                
+                // Simulate translation
+                const languages = {
+                    en: "English",
+                    es: "Spanish",
+                    fr: "French",
+                    de: "German",
+                    zh: "Chinese",
+                    ja: "Japanese",
+                    ru: "Russian",
+                    ar: "Arabic"
+                };
+                
+                const sourceLang = document.getElementById('source-language').value;
+                const targetLang = document.getElementById('target-language').value;
+                
+                let translation;
+                if (text.toLowerCase().includes('hello')) {
+                    translation = {
+                        en: "Hello",
+                        es: "Hola",
+                        fr: "Bonjour",
+                        de: "Hallo",
+                        zh: "你好",
+                        ja: "こんにちは",
+                        ru: "Привет",
+                        ar: "مرحبا"
+                    }[targetLang];
+                } else if (text.toLowerCase().includes('thank')) {
+                    translation = {
+                        en: "Thank you",
+                        es: "Gracias",
+                        fr: "Merci",
+                        de: "Danke",
+                        zh: "谢谢",
+                        ja: "ありがとう",
+                        ru: "Спасибо",
+                        ar: "شكرا"
+                    }[targetLang];
+                } else {
+                    translation = `[Translated to ${languages[targetLang] || targetLang}]: ${text}`;
+                }
+                
+                translatedText.value = translation;
+            });
+            
+            // Cheatsheet functionality
+            generateCheatsheetBtn.addEventListener('click', () => {
+                const topic = cheatsheetTopic.value.trim();
+                if (topic === '') return;
+                
+                // Simulate cheatsheet generation
+                const sections = {
+                    "Python": [
+                        {
+                            title: "Basic Syntax",
+                            items: [
+                                "Variables: x = 10",
+                                "Lists: my_list = [1, 2, 3]",
+                                "Dictionaries: my_dict = {'key': 'value'}",
+                                "Loops: for item in collection:",
+                                "Functions: def my_func(param):"
+                            ]
+                        },
+                        {
+                            title: "Common Patterns",
+                            items: [
+                                "List comprehension: [x*2 for x in range(10)]",
+                                "Dictionary comprehension: {k: v*2 for k, v in my_dict.items()}",
+                                "Lambda functions: lambda x: x*2",
+                                "Context managers: with open('file.txt') as f:"
+                            ]
+                        }
+                    ],
+                    "CSS Grid": [
+                        {
+                            title: "Container Properties",
+                            items: [
+                                "display: grid",
+                                "grid-template-columns: 1fr 1fr 1fr",
+                                "grid-template-rows: 100px auto",
+                                "gap: 10px"
+                            ]
+                        },
+                        {
+                            title: "Item Properties",
+                            items: [
+                                "grid-column: 1 / 3",
+                                "grid-row: 1",
+                                "grid-area: header",
+                                "justify-self: center"
+                            ]
+                        }
+                    ],
+                    "React": [
+                        {
+                            title: "Components",
+                            items: [
+                                "Functional: const MyComp = () => { return <div>Hello</div>; }",
+                                "Class: class MyComp extends React.Component { render() { return <div>Hello</div>; } }",
+                                "Props: <MyComp prop1=\"value\" />",
+                                "State: const [state, setState] = useState(initialValue)"
+                            ]
+                        },
+                        {
+                            title: "Hooks",
+                            items: [
+                                "useState: Manage component state",
+                                "useEffect: Side effects",
+                                "useContext: Access context",
+                                "useReducer: Complex state logic"
+                            ]
+                        }
+                    ]
+                };
+                
+                let selectedSections = sections["Python"]; // Default
+                
+                for (const key in sections) {
+                    if (topic.toLowerCase().includes(key.toLowerCase())) {
+                        selectedSections = sections[key];
+                        break;
+                    }
+                }
+                
+                cheatsheetResult.innerHTML = '';
+                selectedSections.forEach(section => {
+                    const sectionDiv = document.createElement('div');
+                    sectionDiv.className = 'cheatsheet-section';
+                    
+                    const title = document.createElement('h4');
+                    title.className = 'cheatsheet-title';
+                    title.textContent = section.title;
+                    
+                    sectionDiv.appendChild(title);
+                    
+                    section.items.forEach(item => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'cheatsheet-item';
+                        itemDiv.textContent = item;
+                        sectionDiv.appendChild(itemDiv);
+                    });
+                    
+                    cheatsheetResult.appendChild(sectionDiv);
+                });
+                
+                cheatsheetResult.style.display = 'block';
+            });
+            
+            // Flashcards functionality
+            generateFlashcardsBtn.addEventListener('click', () => {
+                const topic = flashcardTopic.value.trim();
+                if (topic === '') return;
+                
+                // Simulate flashcard generation
+                const flashcards = {
+                    "Biology": [
+                        { question: "What is the powerhouse of the cell?", answer: "Mitochondria" },
+                        { question: "What is the process by which plants make food?", answer: "Photosynthesis" },
+                        { question: "What are the four nucleotide bases in DNA?", answer: "Adenine, Thymine, Cytosine, Guanine" }
+                    ],
+                    "French": [
+                        { question: "How do you say 'Hello' in French?", answer: "Bonjour" },
+                        { question: "How do you say 'Thank you' in French?", answer: "Merci" },
+                        { question: "How do you say 'Goodbye' in French?", answer: "Au revoir" }
+                    ],
+                    "History": [
+                        { question: "In what year did World War II end?", answer: "1945" },
+                        { question: "Who was the first president of the United States?", answer: "George Washington" },
+                        { question: "What ancient civilization built the pyramids?", answer: "Ancient Egyptians" }
+                    ]
+                };
+                
+                let selectedFlashcards = flashcards["Biology"]; // Default
+                
+                for (const key in flashcards) {
+                    if (topic.toLowerCase().includes(key.toLowerCase())) {
+                        selectedFlashcards = flashcards[key];
+                        break;
+                    }
+                }
+                
+                flashcardContainer.innerHTML = '';
+                selectedFlashcards.forEach((card, index) => {
+                    const flashcard = document.createElement('div');
+                    flashcard.className = 'flashcard';
+                    flashcard.innerHTML = `
+                        <div class="flashcard-question">${index + 1}. ${card.question}</div>
+                        <div class="flashcard-answer">${card.answer}</div>
+                    `;
+                    
+                    flashcard.addEventListener('click', () => {
+                        flashcard.classList.toggle('show-answer');
+                    });
+                    
+                    flashcardContainer.appendChild(flashcard);
+                });
+                
+                flashcardResult.style.display = 'block';
+            });
+            
+            // Mental health assessment
+            assessMhBtn.addEventListener('click', () => {
+                const answers = [
+                    parseInt(document.querySelector('input[name="q1"]:checked')?.value || 0),
+                    parseInt(document.querySelector('input[name="q2"]:checked')?.value || 0),
+                    parseInt(document.querySelector('input[name="q3"]:checked')?.value || 0)
+                ];
+                
+                const totalScore = answers.reduce((sum, score) => sum + score, 0);
+                
+                let assessment;
+                if (totalScore === 0) {
+                    assessment = "Your responses suggest you're doing well mentally. Keep up the good self-care!";
+                } else if (totalScore <= 3) {
+                    assessment = "You're experiencing some mild symptoms. Consider practicing self-care and monitoring your mood.";
+                } else if (totalScore <= 6) {
+                    assessment = "You're experiencing moderate symptoms. You might benefit from talking to a professional.";
+                } else {
+                    assessment = "Your responses suggest significant symptoms. Please consider reaching out to a mental health professional for support.";
+                }
+                
+                mhResult.innerHTML = `
+                    <h4>Your Assessment</h4>
+                    <p>Score: ${totalScore}/9</p>
+                    <p>${assessment}</p>
+                    <p style="margin-top: 10px; font-size: 14px;">
+                        <strong>Resources:</strong> 
+                        <a href="https://www.mentalhealth.gov/" target="_blank" style="color: var(--secondary);">MentalHealth.gov</a> | 
+                        <a href="https://www.nami.org/" target="_blank" style="color: var(--secondary);">NAMI</a> | 
+                        <a href="https://suicidepreventionlifeline.org/" target="_blank" style="color: var(--secondary);">Suicide Prevention Lifeline</a>
+                    </p>
+                `;
+                mhResult.style.display = 'block';
             });
         }
         
@@ -804,18 +1536,49 @@
                     "Alright, let's talk security here. What you're dealing with is a classic case of...",
                     "In my 20 years of infosec, I've seen this pattern before. Here's how we handle it...",
                     "Red team, blue team - doesn't matter. The vulnerability here is clearly..."
+                ],
+                sherlock: [
+                    "Elementary, my dear user. The solution becomes apparent when we observe that...",
+                    "The game is afoot! By examining the evidence, we can deduce that...",
+                    "You see, but you do not observe. The crucial detail here is..."
+                ],
+                einstein: [
+                    "E=mc² may not directly apply here, but the principle is similar. Consider that...",
+                    "Imagination is more important than knowledge in this case. Let me explain...",
+                    "The important thing is not to stop questioning. In this situation..."
                 ]
             };
             
             const personaResponses = responses[persona] || responses.default;
             const randomResponse = personaResponses[Math.floor(Math.random() * personaResponses.length)];
             
-            // Add some code blocks if the message seems technical
-            if (message.toLowerCase().includes('code') || message.toLowerCase().includes('program')) {
-                return `${randomResponse}\n\nHere's an example:\n\`\`\`javascript\nfunction example() {\n  // This is a sample code block\n  return "Hello, world!";\n}\n\`\`\``;
+            // Adjust tone
+            let response = randomResponse;
+            if (tone < 30) {
+                // Very casual
+                response = response.replace(/I've/g, "I've").replace(/here's/g, "here's");
+                response = "Hey! " + response.toLowerCase();
+            } else if (tone > 70) {
+                // Very professional
+                response = response.replace(/I've/g, "I have").replace(/here's/g, "here is");
+                response = "After careful consideration, " + response;
             }
             
-            return randomResponse;
+            // Add some code blocks if the message seems technical
+            if (message.toLowerCase().includes('code') || message.toLowerCase().includes('program')) {
+                return `${response}\n\nHere's an example:\n\`\`\`javascript\nfunction example() {\n  // This is a sample code block\n  return "Hello, world!";\n}\n\`\`\``;
+            }
+            
+            // Add some special responses for certain keywords
+            if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+                return `${response}\n\nBy the way, I can speak multiple languages! Try the translation feature if you'd like me to translate something.`;
+            }
+            
+            if (message.toLowerCase().includes('help')) {
+                return `${response}\n\nRemember, I have many features like cheat sheet generation, flashcards, and mental health check. Feel free to explore them!`;
+            }
+            
+            return response;
         }
         
         // Detect emotion from text (simplified)
